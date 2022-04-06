@@ -16,7 +16,7 @@ mongoose.set('useCreateIndex', true);
 // movie schema, all fields are required and actors is an array of strings
 var MovieSchema = new Schema({
     Title: {type: String, required: true, index: {unique: true}, trim: true},
-    'Year Released': {type: Number, required: true, trim: true},
+    YearReleased: {type: Number, required: true, trim: true},
     Genre: {type: String, required: true, trim: true},
     Actors: [String]
 });
