@@ -184,6 +184,59 @@ router.delete('/movies/:id', (req, res) => {
 
 });
 
+
+
+router.route('/movies/:movieparameter')
+    .get(authJwtController.isAuthenticated, function(req, res) {
+        if (req.query.reviews === 'true'){
+            Movie.aggregate([
+                {
+                    $lookup:
+                        {
+                            from: 'reviews',
+                            localField: 'title',
+                            foreignField: 'title',
+                            as: 'movie_reviews'
+                        }
+                },
+                {
+                    $match:{
+                        'movie_reviews.title': req.params.movieparameter
+                    }
+                }
+            ]).exec(function(err, results){
+                res.status(200).send(results);
+            });
+        }
+        else{
+            Movie.findOne({ title: req.params.movieparameter }, function(err, movie){
+                if (err) throw err;
+                if (!movie)
+                    res.status(400).send( {success: false, message: "Couldn't find movie." } );
+                else
+                    res.status(200).send(movie);
+            })
+        }
+    })
+    .put(authJwtController.isAuthenticated, function(req, res){
+        Movie.updateOne( { title: req.params.movieparameter }, req.body, { runValidators: true }, function (err, movie) {
+            if (err) throw err;
+            res.json({success: true, message: `Updated movie ${req.params.movieparameter}.`});
+        });
+    })
+    .delete(authJwtController.isAuthenticated, function(req, res){
+            Movie.deleteOne({title: req.params.movieparameter}, function (err, movie){
+                if (err) throw err;
+                if (movie.deletedCount == 1)
+                    res.status(200).send( {success: true, message: `Deleted movie ${req.params.movieparameter}.` } );
+                else
+                    res.status(400).send( {success: false, message: "Couldn't find movie." } );
+            } );
+        }
+    )
+;
+
+
 // GET movies gets all the movies with their reviews (fetchMovies)
 router.get('/moviereviews', (req, res) => {
 

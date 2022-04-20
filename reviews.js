@@ -23,6 +23,10 @@ var ReviewSchema = new Schema({
         type: String,
         required: true,
         trim: true
+    },
+    Comments: {
+        type: [ { comentatorName: String, comment: String } ],
+        required: true
     }
 });
 
