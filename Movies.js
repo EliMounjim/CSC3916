@@ -18,7 +18,7 @@ var MovieSchema = new Schema({
     Title: {type: String, required: true, index: {unique: true}, trim: true},
     YearReleased: {type: Number, required: true, trim: true},
     Genre: {type: String, required: true, trim: true},
-    Actors: { type: [ { actorName: String, characterName: String } ], required: [true, 'missing actors']},
+    Actors: { type: String, required: [true, 'missing actors']},
     ImageUrl: {type: String, required: [true, 'Missing image url'], unique: true}
 });
 
